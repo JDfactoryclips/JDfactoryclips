@@ -10,3 +10,5 @@
 - I have been making music since i was in the fifth grade
 - I was born in Los Angeles
 - I moved to New York City when i was 4
+- I like going to the gym
+- I am currently a senior in highschool
