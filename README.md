@@ -8,5 +8,5 @@
 # more about me
 - I am a professional music producer
 - I have been making music since i was in the fifth grade
-  
-
+- I was born in Los Angeles
+- I moved to New York City when i was 4
