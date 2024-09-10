@@ -12,3 +12,5 @@
 - I moved to New York City when i was 4
 - I like going to the gym
 - I am currently a senior in highschool
+- I hate eggs
+- I like purple
