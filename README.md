@@ -14,3 +14,9 @@
 - I am currently a senior in highschool
 - I hate eggs
 - I like purple
+### Reflection
+
+<img width="1332" alt="Screenshot 2024-09-10 at 9 39 58 AM" src="https://github.com/user-attachments/assets/56ce9d3c-d2cb-49ae-b210-8cf24a0ab915">
+
+- The commit messages give an accurate idea of the progress made with each save, as i added only two lines per commit and some of them are related to each other
+- I can use a process like this when produciing music on the software FL studio, which actually has an automatic save feature that documents progress by a certain time frame.
