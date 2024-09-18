@@ -20,3 +20,4 @@
 
 - The commit messages give an accurate idea of the progress made with each save, as i added only two lines per commit and some of them are related to each other
 - I can use a process like this when produciing music on the software FL studio, which actually has an automatic save feature that documents progress by a certain time frame.
+
