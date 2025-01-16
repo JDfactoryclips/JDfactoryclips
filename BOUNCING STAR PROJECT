@@ -1,0 +1,80 @@
+let stars = [];
+
+function setup() {
+  createCanvas(800, 600);
+  for (let i = 0; i < 10; i++) {
+    stars.push(createStar());
+  }
+}
+
+function draw() {
+  background(30);
+  for (let star of stars) {
+    updateStar(star);
+    drawStar(star);
+  }
+}
+
+// Function to create a star object
+function createStar() {
+  return {
+    x: random(width),
+    y: random(height),
+    vx: random(-3, 3),
+    vy: random(-3, 3),
+    size: random(30, 50),
+    color: color(random(255), random(255), random(255)),
+    angle: 0, // For breathing effect
+  };
+}
+
+// Function to update star properties
+function updateStar(star) {
+  // Move the star
+  star.x += star.vx;
+  star.y += star.vy;
+
+  // Bounce off edges
+  if (star.x < 0 || star.x > width) {
+    star.vx *= -1;
+    star.color = color(random(255), random(255), random(255)); // Change color
+  }
+  if (star.y < 0 || star.y > height) {
+    star.vy *= -1;
+    star.color = color(random(255), random(255), random(255)); // Change color
+  }
+
+  // Breathing effect
+  star.angle += 0.05;
+  star.size = 40 + 10 * sin(star.angle);
+}
+
+// Function to draw a star
+function drawStar(star) {
+  push();
+  translate(star.x, star.y);
+  fill(star.color);
+  noStroke();
+  let points = 5;
+  let innerRadius = star.size * 0.5;
+  let outerRadius = star.size;
+  beginShape();
+  for (let i = 0; i < points * 2; i++) {
+    let angle = (TWO_PI / (points * 2)) * i;
+    let radius = i % 2 === 0 ? outerRadius : innerRadius;
+    let x = cos(angle) * radius;
+    let y = sin(angle) * radius;
+    vertex(x, y);
+  }
+  endShape(CLOSE);
+  pop();
+}
+
+// Handle user interaction
+function keyPressed() {
+  if (key === 'a') {
+    stars.push(createStar()); // Add a star
+  } else if (key === 'd' && stars.length > 0) {
+    stars.pop(); // Remove the last star
+  }
+}
