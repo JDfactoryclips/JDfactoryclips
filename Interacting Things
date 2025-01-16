@@ -1,0 +1,112 @@
+let circle, rectangle;
+
+function setup() {
+  createCanvas(800, 600);
+  resetShapes(); // Initialize the shapes
+}
+
+function draw() {
+  background(50);
+
+  // Update and draw the circle
+  updateCircle(circle);
+  drawCircle(circle);
+
+  // Update and draw the rectangle
+  updateRectangle(rectangle);
+  drawRectangle(rectangle);
+
+  // Check for collision and handle it
+  if (isColliding(circle, rectangle)) {
+    handleCollision(circle, rectangle);
+  }
+}
+
+// Function to reset shapes to their initial state
+function resetShapes() {
+  circle = {
+    x: random(50, width - 50),
+    y: random(50, height - 50),
+    radius: 50,
+    vx: random(-3, 3),
+    vy: random(-3, 3),
+    color: color(random(255), random(255), random(255)),
+  };
+
+  rectangle = {
+    x: random(50, width - 150),
+    y: random(50, height - 150),
+    width: 100,
+    height: 50,
+    vx: random(-2, 2),
+    vy: random(-2, 2),
+    color: color(random(255), random(255), random(255)),
+  };
+}
+
+// Update circle's position and bounce off edges
+function updateCircle(c) {
+  c.x += c.vx;
+  c.y += c.vy;
+
+  // Bounce off edges
+  if (c.x - c.radius < 0 || c.x + c.radius > width) {
+    c.vx *= -1;
+  }
+  if (c.y - c.radius < 0 || c.y + c.radius > height) {
+    c.vy *= -1;
+  }
+}
+
+// Draw the circle
+function drawCircle(c) {
+  fill(c.color);
+  noStroke();
+  ellipse(c.x, c.y, c.radius * 2);
+}
+
+// Update rectangle's position and bounce off edges
+function updateRectangle(r) {
+  r.x += r.vx;
+  r.y += r.vy;
+
+  // Bounce off edges
+  if (r.x < 0 || r.x + r.width > width) {
+    r.vx *= -1;
+  }
+  if (r.y < 0 || r.y + r.height > height) {
+    r.vy *= -1;
+  }
+}
+
+// Draw the rectangle
+function drawRectangle(r) {
+  fill(r.color);
+  noStroke();
+  rect(r.x, r.y, r.width, r.height);
+}
+
+// Check if the circle and rectangle are colliding
+function isColliding(c, r) {
+  let closestX = constrain(c.x, r.x, r.x + r.width);
+  let closestY = constrain(c.y, r.y, r.y + r.height);
+  let distance = dist(c.x, c.y, closestX, closestY);
+  return distance < c.radius;
+}
+
+// Handle collision by changing color and reversing direction
+function handleCollision(c, r) {
+  c.color = color(random(255), random(255), random(255));
+  r.color = color(random(255), random(255), random(255));
+  c.vx *= -1;
+  c.vy *= -1;
+  r.vx *= -1;
+  r.vy *= -1;
+}
+
+// Reset the program when the 'r' key is pressed
+function keyPressed() {
+  if (key === 'r' || key === 'R') {
+    resetShapes();
+  }
+}
