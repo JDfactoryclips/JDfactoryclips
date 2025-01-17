@@ -1,0 +1,18 @@
+# Koch Snowflake
+
+## What is It?
+The Koch Snowflake is a fractal made by starting with a simple shape (like a triangle or line) and adding smaller "bumps" to each line over and over.
+
+## Steps to Make It
+1. **Start with a Shape**: Begin with a triangle or a single line segment.
+2. **Divide the Lines**: Break each line into three equal parts.
+3. **Add a Bump**: Replace the middle part with a triangle pointing outward.
+4. **Repeat**: Do this for every line in the shape, over and over.
+
+## When to Stop
+- Stop dividing the lines when they get really small (this is the "base case").
+- Then just draw the shape as it is.
+
+## Tools in p5.js
+- **`translate()`**: Move to the starting point of a line to make drawing easier.
+- **`rotate()`**: Turn the canvas to draw the triangle "bump" in the right direction.
