@@ -1,0 +1,109 @@
+let graph;
+
+function setup() {
+  createCanvas(900, 600);
+  textFont('Arial');
+
+  // Example Data
+  let players = [
+    "Luka Dončić",
+    "Shai G-Alexander",
+    "Giannis",
+    "Tatum",
+    "Durant",
+    "Curry",
+    "Embiid",
+    "LeBron"
+  ];
+
+  let ppg = [33.9, 31.4, 30.7, 27.0, 27.1, 26.4, 34.7, 25.0];
+
+  let colors = [
+    '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF',
+    '#FF6BF0', '#FFA36C', '#8D6EFF', '#00B5B8'
+  ];
+
+  // Instantiate the chart
+  graph = new BarGraph(60, 60, width - 120, height - 120, ppg, players, colors, "Top NBA Scorers (2023–24 PPG)", 40);
+}
+
+function draw() {
+  background(255);
+  graph.draw();
+}
+
+class BarGraph {
+  constructor(x, y, w, h, data, labels, colors, title, maxValue) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.data = data;
+    this.labels = labels;
+    this.colors = colors;
+    this.title = title;
+    this.maxValue = maxValue;
+  }
+
+  draw() {
+    this.drawTitle();
+    this.drawAxes();
+    this.drawBars();
+  }
+
+  drawTitle() {
+    fill(0);
+    noStroke();
+    textAlign(CENTER, TOP);
+    textSize(24);
+    text(this.title, width / 2, this.y - 40);
+  }
+
+  drawAxes() {
+    stroke(0);
+    strokeWeight(2);
+
+    // X and Y axes
+    line(this.x, this.y + this.h, this.x + this.w, this.y + this.h);
+    line(this.x, this.y + this.h, this.x, this.y);
+
+    let steps = 5;
+    for (let i = 0; i <= steps; i++) {
+      let val = i * (this.maxValue / steps);
+      let yPos = map(val, 0, this.maxValue, this.y + this.h, this.y);
+
+      stroke(200);
+      line(this.x, yPos, this.x + this.w, yPos);
+
+      noStroke();
+      fill(0);
+      textAlign(RIGHT, CENTER);
+      text(nf(val, 0, 1), this.x - 10, yPos);
+    }
+  }
+
+  drawBars() {
+    let barWidth = this.w / this.data.length;
+
+    for (let i = 0; i < this.data.length; i++) {
+      let barHeight = map(this.data[i], 0, this.maxValue, 0, this.h);
+      let x = this.x + i * barWidth;
+      let y = this.y + this.h - barHeight;
+
+      fill(this.colors[i]);
+      stroke(0);
+      rect(x, y, barWidth - 10, barHeight);
+
+      // Value above bar
+      fill(0);
+      noStroke();
+      textAlign(CENTER, BOTTOM);
+      text(nf(this.data[i], 0, 1), x + (barWidth - 10) / 2, y - 5);
+
+      // Label below bar
+      textAlign(CENTER, TOP);
+      textSize(11);
+      text(this.labels[i], x + (barWidth - 10) / 2, this.y + this.h + 5);
+    }
+  }
+}
