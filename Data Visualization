@@ -1,0 +1,90 @@
+let playerNames = [
+  "Messi", "Haaland", "Mbappé", "Salah",
+  "Kane", "Ronaldo", "Vinícius", "Lewandowski"
+];
+
+let goalsScored = [32, 45, 41, 26, 30, 28, 22, 35]; // Example goal data
+let barColors = [];
+let maxValue = 50; // Max goals for Y-axis
+
+function setup() {
+  createCanvas(900, 600);
+  setupColors();
+  textFont('Arial');
+}
+
+function draw() {
+  background(255);
+  drawTitle();
+  drawAxes();
+  drawBars();
+}
+
+// Set distinct colors for each bar
+function setupColors() {
+  barColors = [
+    color('#FF6B6B'), color('#FFD93D'), color('#6BCB77'), color('#4D96FF'),
+    color('#FF6BF0'), color('#FFA36C'), color('#8D6EFF'), color('#00B5B8')
+  ];
+}
+
+// Draw chart title
+function drawTitle() {
+  fill(0);
+  textAlign(CENTER, TOP);
+  textSize(24);
+  text("Goals Scored by Top 8 Players - 2024 Season", width / 2, 20);
+}
+
+// Draw X and Y axes with Y labels
+function drawAxes() {
+  stroke(0);
+  strokeWeight(2);
+
+  // X-axis
+  line(50, height - 80, width - 50, height - 80);
+
+  // Y-axis
+  line(50, height - 80, 50, 60);
+
+  // Y-axis grid and labels
+  let steps = 5;
+  for (let i = 0; i <= steps; i++) {
+    let value = i * (maxValue / steps);
+    let y = map(value, 0, maxValue, height - 80, 60);
+
+    stroke(200);
+    line(50, y, width - 50, y); // grid line
+
+    noStroke();
+    fill(0);
+    textAlign(RIGHT, CENTER);
+    text(int(value), 40, y);
+  }
+}
+
+// Draw the bars and labels
+function drawBars() {
+  let numPlayers = goalsScored.length;
+  let barWidth = (width - 100) / numPlayers;
+
+  for (let i = 0; i < numPlayers; i++) {
+    let x = 50 + i * barWidth;
+    let y = map(goalsScored[i], 0, maxValue, height - 80, 60);
+    let h = height - 80 - y;
+
+    fill(barColors[i]);
+    stroke(0);
+    rect(x, y, barWidth - 10, h);
+
+    // Goal number on top
+    fill(0);
+    noStroke();
+    textAlign(CENTER, BOTTOM);
+    text(goalsScored[i], x + (barWidth - 10) / 2, y - 5);
+
+    // Player name below the bar
+    textAlign(CENTER, TOP);
+    textSize(12);
+    text(playerNames[i], x + (barWidth - 10) / 2, height - 70);
+  }
