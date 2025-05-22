@@ -1,0 +1,75 @@
+let ball;
+
+function setup() {
+  createCanvas(800, 600);
+  ball = new PhysicsCircle(width / 2, 100, 30);
+}
+
+function draw() {
+  background(255);
+
+  ball.applyGravity();
+  ball.update();
+  ball.edges();
+  ball.display();
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    ball.applyForce(createVector(1, 0)); // wind to the right
+  }
+}
+
+class PhysicsCircle {
+  constructor(x, y, r) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    this.r = r;
+    this.gravity = createVector(0, 0.4);
+    this.damping = 0.8; // bounce dampening
+  }
+
+  applyForce(force) {
+    this.acc.add(force);
+  }
+
+  applyGravity() {
+    this.applyForce(this.gravity);
+  }
+
+  update() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0); // clear acceleration
+  }
+
+  edges() {
+    if (this.pos.y + this.r > height) {
+      this.pos.y = height - this.r;
+      this.vel.y *= -this.damping;
+    }
+
+    if (this.pos.y - this.r < 0) {
+      this.pos.y = this.r;
+      this.vel.y *= -this.damping;
+    }
+
+    if (this.pos.x + this.r > width) {
+      this.pos.x = width - this.r;
+      this.vel.x *= -this.damping;
+    }
+
+    if (this.pos.x - this.r < 0) {
+      this.pos.x = this.r;
+      this.vel.x *= -this.damping;
+    }
+  }
+
+  display() {
+    fill(100, 150, 255);
+    stroke(0);
+    strokeWeight(2);
+    ellipse(this.pos.x, this.pos.y, this.r * 2);
+  }
+}
