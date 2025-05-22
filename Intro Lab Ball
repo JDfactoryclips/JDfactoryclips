@@ -1,91 +1,86 @@
-let ball;
+let mover;
 
 function setup() {
   createCanvas(800, 600);
-  ball = new PhysicsCircle(width / 2, 100, 30, 1.5);
+  mover = new Mover(50, createVector(width / 2, height / 2), 1);
 }
 
 function draw() {
   background(255);
 
-  ball.applyGravity();
-  ball.applyFriction();
-  ball.update();
-  ball.edges();
-  ball.display();
+  // Apply gravity
+  let gravity = createVector(0, 0.2 * mover.mass);
+  mover.applyForce(gravity);
+
+  // Apply friction if on ground
+  if (mover.position.y >= height - mover.radius) {
+    let friction = mover.velocity.copy();
+    friction.normalize();
+    friction.mult(-1);
+    friction.mult(0.05);
+    mover.applyForce(friction);
+  }
+
+  mover.update();
+  mover.edges();
+  mover.display();
 }
 
+// Interactivity
 function keyPressed() {
   if (key === ' ') {
-    let wind = createVector(1.5, 0);
-    ball.applyForce(wind);
+    let wind = createVector(0.5, 0);
+    mover.applyForce(wind);
   }
 }
 
-class PhysicsCircle {
-  constructor(x, y, r, mass = 1) {
-    this.pos = createVector(x, y);
-    this.vel = createVector(0, 0);
-    this.acc = createVector(0, 0);
-    this.r = r;
+function mousePressed() {
+  // Click gives upward boost
+  let boost = createVector(0, -5);
+  mover.applyForce(boost);
+}
+
+// Mover class
+class Mover {
+  constructor(radius, position, mass) {
+    this.radius = radius;
+    this.position = position.copy();
+    this.velocity = createVector(0, 0);
+    this.acceleration = createVector(0, 0);
     this.mass = mass;
-    this.damping = 0.8;
   }
 
   applyForce(force) {
     let f = p5.Vector.div(force, this.mass);
-    this.acc.add(f);
-  }
-
-  applyGravity() {
-    let gravity = createVector(0, 0.4 * this.mass);
-    this.applyForce(gravity);
-  }
-
-  applyFriction(c = 0.05) {
-    let friction = this.vel.copy();
-    if (friction.mag() > 0) {
-      friction.normalize();
-      friction.mult(-1);
-      friction.mult(c);
-      this.applyForce(friction);
-    }
+    this.acceleration.add(f);
   }
 
   update() {
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    this.acc.mult(0);
-  }
-
-  edges() {
-    if (this.pos.y + this.r > height) {
-      this.pos.y = height - this.r;
-      this.vel.y *= -this.damping;
-    }
-
-    if (this.pos.x + this.r > width) {
-      this.pos.x = width - this.r;
-      this.vel.x *= -this.damping;
-    }
-
-    if (this.pos.y - this.r < 0) {
-      this.pos.y = this.r;
-      this.vel.y *= -this.damping;
-    }
-
-    if (this.pos.x - this.r < 0) {
-      this.pos.x = this.r;
-      this.vel.x *= -this.damping;
-    }
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    this.acceleration.mult(0); // reset acceleration
   }
 
   display() {
     fill(100, 150, 255);
     stroke(0);
-    strokeWeight(2);
-    ellipse(this.pos.x, this.pos.y, this.r * 2);
+    strokeWeight(1);
+    ellipse(this.position.x, this.position.y, this.radius * 2);
+  }
+
+  edges() {
+    if (this.position.y + this.radius > height) {
+      this.position.y = height - this.radius;
+      this.velocity.y *= -0.8; // bounce with damping
+    }
+
+    if (this.position.x + this.radius > width) {
+      this.position.x = width - this.radius;
+      this.velocity.x *= -1;
+    } else if (this.position.x - this.radius < 0) {
+      this.position.x = this.radius;
+      this.velocity.x *= -1;
+    }
   }
 }
-
 
