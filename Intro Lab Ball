@@ -2,13 +2,14 @@ let ball;
 
 function setup() {
   createCanvas(800, 600);
-  ball = new PhysicsCircle(width / 2, 100, 30);
+  ball = new PhysicsCircle(width / 2, 100, 30, 1.5);
 }
 
 function draw() {
   background(255);
 
   ball.applyGravity();
+  ball.applyFriction();
   ball.update();
   ball.edges();
   ball.display();
@@ -16,32 +17,45 @@ function draw() {
 
 function keyPressed() {
   if (key === ' ') {
-    ball.applyForce(createVector(1, 0)); // wind to the right
+    let wind = createVector(1.5, 0);
+    ball.applyForce(wind);
   }
 }
 
 class PhysicsCircle {
-  constructor(x, y, r) {
+  constructor(x, y, r, mass = 1) {
     this.pos = createVector(x, y);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.r = r;
-    this.gravity = createVector(0, 0.4);
-    this.damping = 0.8; // bounce dampening
+    this.mass = mass;
+    this.damping = 0.8;
   }
 
   applyForce(force) {
-    this.acc.add(force);
+    let f = p5.Vector.div(force, this.mass);
+    this.acc.add(f);
   }
 
   applyGravity() {
-    this.applyForce(this.gravity);
+    let gravity = createVector(0, 0.4 * this.mass);
+    this.applyForce(gravity);
+  }
+
+  applyFriction(c = 0.05) {
+    let friction = this.vel.copy();
+    if (friction.mag() > 0) {
+      friction.normalize();
+      friction.mult(-1);
+      friction.mult(c);
+      this.applyForce(friction);
+    }
   }
 
   update() {
     this.vel.add(this.acc);
     this.pos.add(this.vel);
-    this.acc.mult(0); // clear acceleration
+    this.acc.mult(0);
   }
 
   edges() {
@@ -50,14 +64,14 @@ class PhysicsCircle {
       this.vel.y *= -this.damping;
     }
 
-    if (this.pos.y - this.r < 0) {
-      this.pos.y = this.r;
-      this.vel.y *= -this.damping;
-    }
-
     if (this.pos.x + this.r > width) {
       this.pos.x = width - this.r;
       this.vel.x *= -this.damping;
+    }
+
+    if (this.pos.y - this.r < 0) {
+      this.pos.y = this.r;
+      this.vel.y *= -this.damping;
     }
 
     if (this.pos.x - this.r < 0) {
@@ -73,3 +87,5 @@ class PhysicsCircle {
     ellipse(this.pos.x, this.pos.y, this.r * 2);
   }
 }
+
+
